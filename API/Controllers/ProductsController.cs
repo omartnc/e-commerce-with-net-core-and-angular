@@ -1,21 +1,35 @@
-﻿using System;
+﻿ 
+using Core.Entities;
+using Core.Interfaces;
+using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProductsController:ControllerBase
+    public class ProductsController : ControllerBase
     {
-        [HttpGet]
-        public string GetProducts()
+        private readonly IProductRepository _productRepository;
+        private readonly GenericRepository<Product> _genericRepository;
+
+        public ProductsController(IProductRepository productRepository,GenericRepository<Product> genericRepository)
         {
-            return "GetProducts";
+            _productRepository = productRepository;
+            _genericRepository = genericRepository;
+        }
+        [HttpGet]
+        public async Task<ActionResult<List<Product>>> GetProducts()
+        {
+            var products = await _genericRepository.GetAllAsync();
+            return Ok(products);
         }
         [HttpGet("{id}")]
-        public string GetProduct(int id)
+        public async Task<ActionResult<Product>> GetProduct(Guid id)
         {
-            return "GetProduct";
+            var product = await _productRepository.GetProductByIdAsync(id);
+            return Ok(product);
         }
     }
 }
