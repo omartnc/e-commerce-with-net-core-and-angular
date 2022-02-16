@@ -15,7 +15,7 @@ namespace API.Controllers
         [HttpGet("notfound")]
         public ActionResult GetNotFoundRequest()
         {
-            var thing = _storeContext.Find();
+            var thing = "asd";
             if (thing==null)
             {
                 return NotFound(new ApiResponse(404));

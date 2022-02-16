@@ -1,5 +1,6 @@
 ﻿
 using API.Dtos;
+using API.Errors;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
@@ -30,10 +31,16 @@ namespace API.Controllers
             return Ok(_mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products));
         }
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse),StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ProductToReturnDto>> GetProduct(Guid id)
         {
             var spec = new ProductsWithTypesAndBrandsSpecification(id);
             var product = await _genericRepository.GetEntityWithSpec(spec);
+
+            if (product == null)  return NotFound(new ApiResponse(404));
+
+
             //var productDto = new ProductToReturnDto
             //{
             //    Id = product.Id,
