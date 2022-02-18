@@ -18,9 +18,9 @@ namespace Core.Specifications
         }
         public Guid? brandId { get; set; }
         public Guid? typeId { get; set; }
-        public string sort { get; set; }
-        private string _search { get; set; }
-        public string Search { 
+        public string? sort { get; set; }
+        private string? _search { get; set; }
+        public string? Search { 
             get => _search; 
             set => _search = value.ToLower(); 
         }
