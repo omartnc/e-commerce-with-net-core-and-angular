@@ -24,7 +24,7 @@ namespace Infrastructure.Data
            return await ApplySpecification(spec).CountAsync();
         }
 
-        public async Task<IReadOnlyList<T>> GetAllAsync()
+        public async Task<IReadOnlyList<T>> ListAsync()
         {
             return await _storeContext.Set<T>().ToListAsync();
         }

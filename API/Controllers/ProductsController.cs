@@ -16,12 +16,17 @@ namespace API.Controllers
     {
         private readonly IProductRepository _productRepository;
         private readonly IGenericRepository<Product> _genericRepository; 
+        private readonly IGenericRepository<ProductBrand> _productBrandRepository;
+        private readonly IGenericRepository<ProductType> _productTypeRepository;
+         
         private readonly IMapper _mapper;
-        public ProductsController(IProductRepository productRepository, IGenericRepository<Product> genericRepository,IMapper mapper)
+        public ProductsController(IProductRepository productRepository, IGenericRepository<Product> genericRepository,IMapper mapper, IGenericRepository<ProductBrand> productBrandRepository, IGenericRepository<ProductType> productTypeRepository)
         {
             _productRepository = productRepository;
             _genericRepository = genericRepository;
             _mapper = mapper;
+            _productBrandRepository = productBrandRepository;
+            _productTypeRepository = productTypeRepository;
         }
         [HttpGet]
         public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts([FromQuery]ProductSpecParams productParams)
@@ -58,6 +63,17 @@ namespace API.Controllers
             return Ok(_mapper.Map<Product,ProductToReturnDto>(product));
             //var product = await _productRepository.GetProductByIdAsync(id);
             //return Ok(product);
+        }
+
+        [HttpGet("brands")]
+        public async Task<ActionResult<Pagination<ProductBrand>>> GetBrands()
+        { 
+            return Ok(await _productBrandRepository.ListAsync());
+        }
+        [HttpGet("types")]
+        public async Task<ActionResult<Pagination<ProductType>>> GetTypes()
+        {
+            return Ok(await _productTypeRepository.ListAsync());
         }
     }
 }
