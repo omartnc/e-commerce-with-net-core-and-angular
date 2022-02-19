@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IProductBrand } from '../shared/models/brand';
 import { IProduct } from '../shared/models/product';
+import { ShopParams } from '../shared/models/shopParams';
 import { IProductType } from '../shared/models/type';
 import { ShopService } from './shop.service';
 
@@ -14,8 +15,13 @@ export class ShopComponent implements OnInit {
   products: IProduct[];
   productBrands: IProductBrand[];
   productTypes: IProductType[];
-  productTypeIdSelected: string;
-  productBrandIdSelected: string;
+  shopParams = new ShopParams();
+  totalCount: number;
+  sortOptions = [
+    { name: "Alphabetical", value: "name" },
+    { name: "Price: Low to High", value: "priceAsc" },
+    { name: "Price: High to Low", value: "priceDsc" }
+  ]
   constructor(private shopService: ShopService) { }
 
   ngOnInit(): void {
@@ -24,8 +30,11 @@ export class ShopComponent implements OnInit {
     this.getTypes();
   }
   getProducts() {
-    this.shopService.getProducts(this.productBrandIdSelected, this.productTypeIdSelected).subscribe(response => {
+    this.shopService.getProducts(this.shopParams).subscribe(response => {
       this.products = response.data;
+      this.shopParams.pageSize = response.pageSize;
+      this.shopParams.pageNumber = response.pageIndex;
+      this.totalCount = response.count;
     }, error => {
       console.log(error);
     });
@@ -45,11 +54,19 @@ export class ShopComponent implements OnInit {
     });
   }
   onBrandSelected(productBrandId: string) {
-    this.productBrandIdSelected = productBrandId;
+    this.shopParams.productBrandId = productBrandId;
     this.getProducts();
   }
   onTypeSelected(productTypeId: string) {
-    this.productTypeIdSelected = productTypeId;
+    this.shopParams.productTypeId = productTypeId;
+    this.getProducts();
+  }
+  onSortSelected(sort: string) {
+    this.shopParams.productSort = sort;
+    this.getProducts();
+  }
+  onPageChanged(event: any) {
+    this.shopParams.pageNumber = event.page;
     this.getProducts();
   }
 }
