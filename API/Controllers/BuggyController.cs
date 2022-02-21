@@ -25,7 +25,11 @@ namespace API.Controllers
         [HttpGet("servererror")]
         public ActionResult GetServerErrorRequest()
         {
-            return Ok(new ApiResponse(500));
+            var thing = _storeContext.Products.Find(42);
+
+            var thingToReturn = thing.ToString();
+
+            return Ok(); 
         }
         [HttpGet("badrequest")]
         public ActionResult GetBadRequest()
