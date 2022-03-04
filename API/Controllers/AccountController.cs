@@ -65,10 +65,10 @@ namespace API.Controllers
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
             if (user == null)
-                return Unauthorized(new ApiResponse(401));
+                return BadRequest(new ApiResponse(400));
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
             if (!result.Succeeded)
-                return Unauthorized(new ApiResponse(401));
+                return BadRequest(new ApiResponse(400));
             return Ok(new UserDto
             {
                 Email = user.Email,
